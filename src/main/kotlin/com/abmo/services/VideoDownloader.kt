@@ -129,7 +129,7 @@ class VideoDownloader: KoinComponent {
                 }
                 config.outputFile?.appendBytes(array)
                 totalBytesDownloaded += array.size
-                displayProgressBar(totalBytesDownloaded, simpleVideo?.size!!.toLong(), startTime)
+                displayProgressBar(totalBytesDownloaded, simpleVideo?.size!!, startTime)
             }
         }
         val endTime = System.currentTimeMillis()
@@ -299,7 +299,7 @@ class VideoDownloader: KoinComponent {
     }
 
 
-    private suspend fun requestSegment(url: String, body: String, index: Int? = null): Flow<ByteArray> = flow {
+    private fun requestSegment(url: String, body: String, index: Int? = null): Flow<ByteArray> = flow {
 //        println("\n")
         Logger.debug("[$index] Starting HTTP POST request to $url with body length: ${body.length}. Body (truncated): \"...${body.takeLast(30)}")
         val response = Unirest.post(url)
