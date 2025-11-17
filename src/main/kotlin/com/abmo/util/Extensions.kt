@@ -131,10 +131,10 @@ fun isValidPath(filePath: String?): Boolean {
         }
 
         // check if file extension is .mp4 (not about sure about restricting extension here but mostly source uses mp4)
-        if (!outputFile.name.endsWith(".mp4", ignoreCase = true)) {
-            Logger.error("File must have a .mp4 extension: ${outputFile.name}")
-            return false
-        }
+        // if (!outputFile.name.endsWith(".mp4", ignoreCase = true)) {
+        //     Logger.error("File must have a .mp4 extension: ${outputFile.name}")
+        //     return false
+        // }
 
         // check if file already exists
         if (outputFile.exists()) {
