@@ -69,3 +69,8 @@
     *;
 }
 #------------------org.jsoup-------------------
+
+
+-keep class org.bouncycastle.** { *; }
+
+-keep class org.slf4j.** { *; }
