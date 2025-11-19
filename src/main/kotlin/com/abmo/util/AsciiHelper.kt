@@ -58,7 +58,7 @@ fun displayProgressBar(
 
     print(
         "\rDownloading ${(progress * 100).toInt()}% |$bar| " +
-                "(${bytesDownloaded.formatBytes().toInt()}/${mediaSize?.formatAsReadableSize()}, $formattedSpeed) " +
+                "(${bytesDownloaded}/${mediaSize?.formatAsReadableSize()}, $formattedSpeed) " +
                 "[${elapsed} / ${remainingTime}] "
     )
 
