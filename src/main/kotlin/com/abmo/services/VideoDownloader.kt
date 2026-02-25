@@ -271,9 +271,7 @@ class VideoDownloader: KoinComponent {
 
     private suspend fun requestSegment(url: String, token: String, index: Int? = null): Flow<ByteArray> = flow {
         Logger.debug("[$index] Starting request to $url with token token: $token")
-        val response = Unirest.get(url)
         var count = 0
-
         var response: com.mashape.unirest.http.HttpResponse<InputStream>? = null
         while (count < 10) {
             count++
@@ -298,7 +296,6 @@ class VideoDownloader: KoinComponent {
         var bytesRead: Int
 
         rawBody.use { stream ->
-            while (stream.read(buffer).also { bytesRead = it } != -1) {
             while (stream?.read(buffer).also { bytesRead = it ?: -1 } != -1) {
                 emit(buffer.copyOf(bytesRead))
             }
