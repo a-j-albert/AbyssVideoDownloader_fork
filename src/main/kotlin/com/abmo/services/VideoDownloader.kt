@@ -21,7 +21,9 @@ import org.jsoup.Jsoup
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import java.io.File
+import java.io.InputStream
 import java.util.*
+import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicInteger
 import java.util.concurrent.atomic.AtomicLong
 
@@ -270,11 +272,25 @@ class VideoDownloader: KoinComponent {
     private suspend fun requestSegment(url: String, token: String, index: Int? = null): Flow<ByteArray> = flow {
         Logger.debug("[$index] Starting request to $url with token token: $token")
         val response = Unirest.get(url)
-            .header("Referer", "https://abysscdn.com/")
-            .asBinary()
+        var count = 0
 
-        val rawBody = response.rawBody
-        val responseCode = response.status
+        var response: com.mashape.unirest.http.HttpResponse<InputStream>? = null
+        while (count < 10) {
+            count++
+            response = Unirest.get(url)
+                .header("Referer", "https://abysscdn.com/")
+                .asBinary()
+            val rawBody = response.rawBody
+            val responseCode = response.status
+            if (responseCode !in 200..299) {
+                Logger.debug("[$index] Received response with count $count, status $responseCode - sleeping for 15 seconds\n")
+                TimeUnit.SECONDS.sleep(15)
+            }
+            else
+                break
+        }
+        val responseCode = response?.status
+        val rawBody = response?.rawBody
 
         Logger.debug("[$index] Received response with status $responseCode\n", responseCode !in 200..299)
 
@@ -283,6 +299,7 @@ class VideoDownloader: KoinComponent {
 
         rawBody.use { stream ->
             while (stream.read(buffer).also { bytesRead = it } != -1) {
+            while (stream?.read(buffer).also { bytesRead = it ?: -1 } != -1) {
                 emit(buffer.copyOf(bytesRead))
             }
         }
