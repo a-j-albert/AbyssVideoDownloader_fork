@@ -11,6 +11,7 @@ import com.abmo.model.video.toSimpleVideo
 import com.abmo.util.displayProgressBar
 import com.abmo.util.toObject
 import com.mashape.unirest.http.Unirest
+import kotlin.time.Duration.Companion.seconds
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -281,8 +282,9 @@ class VideoDownloader: KoinComponent {
             val rawBody = response.rawBody
             val responseCode = response.status
             if (responseCode !in 200..299) {
-                Logger.debug("[$index] Received response with count $count, status $responseCode - sleeping for 15 seconds\n")
-                TimeUnit.SECONDS.sleep(15)
+                Logger.info("\n[$index] Received response with count $count, status $responseCode - sleeping for 15 seconds\n")
+                // TimeUnit.SECONDS.sleep(15)
+                delay(15.seconds)
             }
             else
                 break
